@@ -19,8 +19,19 @@ async def cmd_start(message: Message):
     )
 
 
+async def _is_admin(message: Message) -> bool:
+    """У приватному чаті — завжди можна; у групі — лише адмін/власник."""
+    if message.chat.type == "private":
+        return True
+    member = await message.bot.get_chat_member(message.chat.id, message.from_user.id)
+    return member.status in ("administrator", "creator")
+
+
 @router.message(Command("poll"))
 async def cmd_poll(message: Message):
+    if not await _is_admin(message):
+        await message.answer("Опитування можуть запускати лише адміни 🙃")
+        return
     await send_game_poll(message.bot, message.chat.id)
 
 
