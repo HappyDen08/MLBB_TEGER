@@ -1,11 +1,14 @@
 """Створення об'єкта Bot з проксі (потрібно для free PythonAnywhere)."""
 import logging
 import os
+from pathlib import Path
 
 from aiogram import Bot
 from dotenv import load_dotenv
 
-load_dotenv()
+# Явний шлях до .env у корені проєкту — щоб працювало і у веб-додатку (WSGI),
+# і в Scheduled task, де робоча тека може бути іншою.
+load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 
 
 def make_bot() -> Bot:
